@@ -1,0 +1,18 @@
+html {
+    font-size: 16px;
+}
+
+table, tr, th, td {
+    border: 1px solid black;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+table {
+    width: 75%;
+    border-collapse: collapse;
+}
+
+tr:nth-child(even) {
+    background-color: rgb(197, 197, 197);
+}
