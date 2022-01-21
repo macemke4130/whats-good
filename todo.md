@@ -1,0 +1,5 @@
+- Each row has a delete button that shows up on hover
+- CRUD operations
+- "A Week" or "3 Days" auto expire date buttons on ADD page for produce estimates
+- Spice Rack table?
+- Refresh once every 6 hours

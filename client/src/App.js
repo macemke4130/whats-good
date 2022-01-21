@@ -42,7 +42,7 @@ function App() {
       <table>
         <thead>
           <tr>
-            <th>Name</th>
+            <th></th>
             <th>Date Purchased</th>
             <th>Date Expires</th>
             <th>Days Remaining</th>
@@ -51,10 +51,10 @@ function App() {
         <tbody>
           {allFood.map(food => (
             <tr>
-              <td key={"item-name-" + food.id} id={"item-name-" + food.id}>{food.item_name}</td>
+              <td key={"item-name-" + food.id} id={"item-name-" + food.id} className="item-col">{food.item_name}</td>
               <td key={"purchased-date-" + food.id} id={"purchased-date-" + food.id}>{food.pretty_purchased_date}</td>
               <td key={"expiration-date-" + food.id} id={"expiration-date-" + food.id}>{food.pretty_expiration_date}</td>
-              <td key={"delta-" + food.id} id={"delta-" + food.id}>{food.delta}</td>
+              <td key={"delta-" + food.id} id={"delta-" + food.id} className={(food.delta.split(" ")[0] < 10   && food.delta.split(" ")[1].substring(0, 1) === "d") ? "red" : "normal"} >{food.delta}</td>
             </tr>
           ))}
         </tbody>
