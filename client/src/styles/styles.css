@@ -35,12 +35,34 @@ table {
     border-collapse: collapse;
 }
 
+tr {
+    height: 7.5vh;
+}
+
 th {
     font-weight: bold;
 }
 
 td {
+    position: relative;
     border: 1px solid #666;
+}
+
+td button {
+    display: none;
+}
+
+td:hover button {
+    display: inline;
+    position: absolute;
+    left: 0;
+    bottom: 0.5rem;
+    border: 2px solid red;
+    border-radius: 5px;
+    background-color: transparent;
+    color: red;
+    margin: 0 0 0 1rem;
+    cursor: pointer;
 }
 
 tr:nth-child(even) {

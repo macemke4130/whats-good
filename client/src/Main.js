@@ -27,16 +27,29 @@ function Main() {
         setAllFood(allFood.all_food);
 
         const allExpired = await gql(`{
-      all_expired {
-        id
-	      item_name
-        pretty_expiration_date
-        delta
-      }
-    }
-    `);
+            all_expired {
+                id
+	            item_name
+                pretty_expiration_date
+                delta
+            }
+        }`);
 
         setAllExpired(allExpired.all_expired);
+    }
+
+    const handleDeleteFood = async (e) => {
+        const id = Number(e.target.id);
+
+        try {
+            const r = await gql(`mutation{
+                deleteFoodItem(
+                id: ${id}
+                ){ changedRows }}`);
+            if (r.deleteFoodItem.changedRows === 1) window.location.reload();
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     useEffect(() => {
@@ -58,7 +71,7 @@ function Main() {
                     <tbody>
                         {allFood.map(food => (
                             <tr key={"food-" + food.id} id={"food-" + food.id} >
-                                <td key={"item-name-" + food.id} id={"item-name-" + food.id} className="item-col">{food.item_name} {food.quantity > 1 && " x" + food.quantity}</td>
+                                <td key={"item-name-" + food.id} id={"item-name-" + food.id} className="item-col">{food.item_name} {food.quantity > 1 && " x" + food.quantity}<button id={food.id} onClick={handleDeleteFood}>X</button></td>
                                 <td key={"purchased-date-" + food.id} id={"purchased-date-" + food.id}>{food.pretty_purchased_date}</td>
                                 <td key={"expiration-date-" + food.id} id={"expiration-date-" + food.id}>{food.pretty_expiration_date}</td>
                                 <td key={"delta-" + food.id} id={"delta-" + food.id} className={((food.delta.split(" ")[0] < warningTime && food.delta.split(" ")[1].substring(0, 1) === "d") || food.delta.split(" ")[1].substring(0, 1) === "h") ? "red" : "normal"}>{food.delta}</td>

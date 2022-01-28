@@ -21,6 +21,10 @@ export const schema = buildSchema(`
       food_type: Int,
       userid: Int
       ): mysqlResponse
+
+    deleteFoodItem(
+      id: Int!
+      ): mysqlResponse
 }
 
   type Food_Item {
@@ -62,7 +66,9 @@ export const root = {
     for (let i = 0; i < r.length; i++) {
       r[i].pretty_purchased_date = prettyDate(r[i].purchased_date);
       r[i].pretty_expiration_date = prettyDate(r[i].expiration_date);
-      r[i].delta = dayjs(new Date()).to(r[i].expiration_date, true);
+      
+      const catchDelta = dayjs(new Date()).to(r[i].expiration_date, true);
+      r[i].delta = catchDelta.substring(0, 1) === "a" ? "1 " + catchDelta.split("a ")[1] : catchDelta;
     }
     return r;
   },
@@ -84,6 +90,10 @@ export const root = {
   // Mutations --
   newFoodItem: async (args) => {
     const r = await query("insert into food_items set ?", [args]);
+    return r;
+  },
+  deleteFoodItem: async (args) => {
+    const r = await query("update food_items set is_active = 0 where id = ?", [args.id]);
     return r;
   }
 };
