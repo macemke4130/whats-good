@@ -9,8 +9,19 @@ export const schema = buildSchema(`
   type Query {
     greet: String
     all_food: [Food_Item]
+    all_expired: [Food_Item]
     food_item(id: Int!): Food_Item
   }
+
+  type Mutation {
+    newFoodItem(
+      item_name: String!,
+      purchased_date: String!,
+      expiration_date: String!,
+      food_type: Int,
+      userid: Int
+      ): mysqlResponse
+}
 
   type Food_Item {
     id: Int
@@ -47,11 +58,19 @@ export const root = {
     return "Satan"
   },
   all_food: async () => {
-    const r = await query("select * from food_items where is_active = 1 order by expiration_date asc");
+    const r = await query("select * from food_items where is_active = 1 and expiration_date > now() order by expiration_date asc");
     for (let i = 0; i < r.length; i++) {
       r[i].pretty_purchased_date = prettyDate(r[i].purchased_date);
       r[i].pretty_expiration_date = prettyDate(r[i].expiration_date);
       r[i].delta = dayjs(new Date()).to(r[i].expiration_date, true);
+    }
+    return r;
+  },
+  all_expired: async () => {
+    const r = await query("select * from food_items where is_active = 1 and expiration_date < now() order by expiration_date asc");
+    for (let i = 0; i < r.length; i++) {
+      r[i].pretty_expiration_date = prettyDate(r[i].expiration_date);
+      r[i].delta = dayjs(new Date()).to(r[i].expiration_date, true) + " ago";
     }
     return r;
   },
@@ -61,6 +80,11 @@ export const root = {
     r[0].pretty_expiration_date = prettyDate(r[0].expiration_date);
     r[0].delta = dayjs(new Date()).to(r[0].expiration_date, true);
     return r[0];
+  },
+  // Mutations --
+  newFoodItem: async (args) => {
+    const r = await query("insert into food_items set ?", [args]);
+    return r;
   }
 };
 
