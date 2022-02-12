@@ -27,16 +27,13 @@ html {
 table, tr, th, td {
     margin: 0;
     padding: 0.5rem 1rem;
+    font-size: 0.75rem;
     text-align: center;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-}
-
-tr {
-    height: 7.5vh;
 }
 
 th {
@@ -56,13 +53,18 @@ td:hover button {
     display: inline;
     position: absolute;
     left: 0;
-    bottom: 0.5rem;
+    bottom: 0.25rem;
     border: 2px solid red;
     border-radius: 5px;
-    background-color: transparent;
+    background-color: black;
     color: red;
     margin: 0 0 0 1rem;
     cursor: pointer;
+    padding: 0 0.5rem;
+}
+
+tr:nth-child(odd):hover button {
+    background-color: rgb(24, 24, 24);
 }
 
 tr:nth-child(even) {
@@ -83,4 +85,9 @@ tr:nth-child(even) {
     color: rgb(200, 200, 200);
     font-weight: normal;
     text-transform: capitalize;
+}
+
+label {
+    font-size: 0.75rem;
+    margin: 0;
 }

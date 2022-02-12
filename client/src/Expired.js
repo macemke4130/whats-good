@@ -3,30 +3,24 @@ import { useEffect, useState } from 'react';
 
 import { gql } from "./utils/gql";
 
-import NewFood from './NewFood';
-import Expired from './Expired';
-
-function Main() {
+function Expired(props) {
     const [openGate, setOpenGate] = useState(true);
-    const [allFood, setAllFood] = useState([]);
-    const warningTime = 3; // Warning time in days --
+    const [allExpired, setAllExpired] = useState([]);
 
     const getData = async () => {
         setOpenGate(false);
 
-        const allFood = await gql(`{
-      all_food {
-        id
-	      item_name
-        quantity
-        pretty_purchased_date
-        pretty_expiration_date
-        delta
-      }
-    }
-    `);
+        const allExpired = await gql(`{
+            all_expired {
+                id
+	            item_name
+                pretty_expiration_date
+                delta
+            }
+        }`);
 
-        setAllFood(allFood.all_food);
+        setAllExpired(allExpired.all_expired);
+        console.log(allExpired.all_expired.length);
     }
 
     const handleDeleteFood = async (e) => {
@@ -47,34 +41,32 @@ function Main() {
         if (openGate) getData();
     });
 
-    return (
-        <>
-            <Expired />
-            <NewFood getData={getData} />
+    if (allExpired.length > 0) {
+        return (
             <div>
                 <table>
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Purchased</th>
-                            <th>Expires</th>
-                            <th>Time Remaining</th>
+                            <th>Date Expired</th>
+                            <th>Expired</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {allFood.map(food => (
+                        {allExpired.map(food => (
                             <tr key={"food-" + food.id} id={"food-" + food.id} >
                                 <td key={"item-name-" + food.id} id={"item-name-" + food.id} className="item-col"><a href={`/edit/${food.id}`}>{food.item_name} {food.quantity > 1 && " x" + food.quantity}</a><button id={food.id} onClick={handleDeleteFood}>X</button></td>
-                                <td key={"purchased-date-" + food.id} id={"purchased-date-" + food.id}>{food.pretty_purchased_date}</td>
                                 <td key={"expiration-date-" + food.id} id={"expiration-date-" + food.id}>{food.pretty_expiration_date}</td>
-                                <td key={"delta-" + food.id} id={"delta-" + food.id} className={((food.delta.split(" ")[0] < warningTime && food.delta.split(" ")[1].substring(0, 1) === "d") || food.delta.split(" ")[1].substring(0, 1) === "h") ? "red" : "normal"}>{food.delta}</td>
+                                <td key={"delta-" + food.id} id={"delta-" + food.id} className="red">{food.delta}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-        </>
-    );
+        );
+    } else {
+        return (<></>);
+    }
 }
 
-export default Main;
+export default Expired;

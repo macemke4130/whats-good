@@ -22,6 +22,13 @@ export const schema = buildSchema(`
       userid: Int
       ): mysqlResponse
 
+    editFoodItem(
+      id: Int!,
+      item_name: String!,
+      purchased_date: String!,
+      expiration_date: String!
+      ): mysqlResponse
+
     deleteFoodItem(
       id: Int!
       ): mysqlResponse
@@ -56,6 +63,7 @@ export const schema = buildSchema(`
 `);
 
 const prettyDate = (rawDate) => dayjs(rawDate).format("MMM DD, YYYY");
+const kabobDate = (rawDate) => dayjs(rawDate).format("YYYY-MM-DD");
 
 export const root = {
   greet: () => {
@@ -66,8 +74,8 @@ export const root = {
     for (let i = 0; i < r.length; i++) {
       r[i].pretty_purchased_date = prettyDate(r[i].purchased_date);
       r[i].pretty_expiration_date = prettyDate(r[i].expiration_date);
-      
       const catchDelta = dayjs(new Date()).to(r[i].expiration_date, true);
+      console.log(dayjs(new Date()).to(r[i].expiration_date, true) + " - " + r[i].item_name);
       r[i].delta = catchDelta.substring(0, 1) === "a" ? "1 " + catchDelta.split("a ")[1] : catchDelta;
     }
     return r;
@@ -84,12 +92,18 @@ export const root = {
     const r = await query("select * from food_items where id = ?", [args.id]);
     r[0].pretty_purchased_date = prettyDate(r[0].purchased_date);
     r[0].pretty_expiration_date = prettyDate(r[0].expiration_date);
+    r[0].purchased_date = kabobDate(r[0].purchased_date);
+    r[0].expiration_date = kabobDate(r[0].expiration_date);
     r[0].delta = dayjs(new Date()).to(r[0].expiration_date, true);
     return r[0];
   },
   // Mutations --
   newFoodItem: async (args) => {
     const r = await query("insert into food_items set ?", [args]);
+    return r;
+  },
+  editFoodItem: async (args) => {
+    const r = await query("update food_items set ? where id = ?", [args, args.id]);
     return r;
   },
   deleteFoodItem: async (args) => {
