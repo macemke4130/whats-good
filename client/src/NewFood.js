@@ -51,8 +51,8 @@ function NewFood(props) {
 
     return (
         <div className="center">
-            <div>
-                <input type="text" ref={nameInput} placeholder="Food" onChange={handleFoodItem} onKeyDown={handleKeyDown} />
+            <div className="input-container">
+                <input type="text" ref={nameInput} placeholder="Food Item" onChange={handleFoodItem} onKeyDown={handleKeyDown} />
                 <label>Expiration: </label><input type="date" onChange={handleExpirationDate} onKeyDown={handleKeyDown} />
                 <label>Purchased: </label><input type="date" value={todaysDate} onChange={handlePurchaseDate} onKeyDown={handleKeyDown} />
                 <button onClick={handleSubmit}>Submit New Food</button>
