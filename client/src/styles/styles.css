@@ -91,3 +91,8 @@ label {
     font-size: 0.75rem;
     margin: 0;
 }
+
+.center {
+    display: flex;
+    justify-content: center;
+}

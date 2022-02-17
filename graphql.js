@@ -75,7 +75,6 @@ export const root = {
       r[i].pretty_purchased_date = prettyDate(r[i].purchased_date);
       r[i].pretty_expiration_date = prettyDate(r[i].expiration_date);
       const catchDelta = dayjs(new Date()).to(r[i].expiration_date, true);
-      console.log(dayjs(new Date()).to(r[i].expiration_date, true) + " - " + r[i].item_name);
       r[i].delta = catchDelta.substring(0, 1) === "a" ? "1 " + catchDelta.split("a ")[1] : catchDelta;
     }
     return r;
