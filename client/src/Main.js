@@ -49,6 +49,7 @@ function Main() {
 
     return (
         <>
+            <a href="./spice-rack">Spice Rack</a>
             <Expired />
             <NewFood getData={getData} />
             <div>

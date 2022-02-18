@@ -20,6 +20,7 @@ function SpiceRack() {
 
     return (
         <>
+            <a href="./">All Food</a>
             <h1>Spice Rack</h1>
             <AddSpice getData={getData} />
             <ul>
