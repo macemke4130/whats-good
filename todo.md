@@ -6,3 +6,10 @@
 - Like Grocery Store Checkout, choose from popular items. Click Avacado button for a quick add. Auto expire date estimate.
 - Auto populate current year for expiration date
 - "an hour" delta bug
+- Expired Pretty should be an object
+    expired_pretty = {
+        time: "an hour",
+        warning: true
+    }
+
+- Toggle to sort All Foods alphabetically

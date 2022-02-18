@@ -11,6 +11,7 @@ export const schema = buildSchema(`
     all_food: [Food_Item]
     all_expired: [Food_Item]
     food_item(id: Int!): Food_Item
+    spice_rack: [Spice]
   }
 
   type Mutation {
@@ -20,18 +21,22 @@ export const schema = buildSchema(`
       expiration_date: String!,
       food_type: Int,
       userid: Int
-      ): mysqlResponse
+    ): mysqlResponse
 
     editFoodItem(
       id: Int!,
       item_name: String!,
       purchased_date: String!,
       expiration_date: String!
-      ): mysqlResponse
+    ): mysqlResponse
 
     deleteFoodItem(
       id: Int!
-      ): mysqlResponse
+    ): mysqlResponse
+
+    newSpice(
+      spice_name: String
+    ): mysqlResponse
 }
 
   type Food_Item {
@@ -47,6 +52,12 @@ export const schema = buildSchema(`
     delta: String
     food_type: Int
     created: Int
+  }
+
+  type Spice {
+    id: Int
+    is_active: Boolean
+    spice_name: String
   }
 
   type mysqlResponse {
@@ -87,6 +98,10 @@ export const root = {
     }
     return r;
   },
+  spice_rack: async () => {
+    const r = await query("select * from spice_rack where is_active = 1 order by spice_name asc");
+    return r;
+  },
   food_item: async (args) => {
     const r = await query("select * from food_items where id = ?", [args.id]);
     r[0].pretty_purchased_date = prettyDate(r[0].purchased_date);
@@ -107,6 +122,10 @@ export const root = {
   },
   deleteFoodItem: async (args) => {
     const r = await query("update food_items set is_active = 0 where id = ?", [args.id]);
+    return r;
+  },
+  newSpice: async (args) => {
+    const r = await query("insert into spice_rack set ?", [args]);
     return r;
   }
 };
