@@ -13,3 +13,4 @@
     }
 
 - Toggle to sort All Foods alphabetically
+- Added Successfully animation on added item

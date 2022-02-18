@@ -21,7 +21,7 @@ function SpiceRack() {
     return (
         <>
             <a href="./">All Food</a>
-            <h1>Spice Rack</h1>
+            <h1>Spices and Oils</h1>
             <AddSpice getData={getData} />
             <ul>
                 {spiceRack.map(spice => (

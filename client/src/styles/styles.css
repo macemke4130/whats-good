@@ -63,7 +63,7 @@ td:hover button {
     padding: 0 0.5rem;
 }
 
-tr:nth-child(odd):hover button {
+tr:nth-child(odd):hover button:not(#sort) {
     background-color: rgb(24, 24, 24);
 }
 

@@ -2,13 +2,15 @@ import { buildSchema } from 'graphql';
 import { query } from "./dbconnect.js";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 
 dayjs.extend(relativeTime);
+dayjs.extend(customParseFormat);
 
 export const schema = buildSchema(`
   type Query {
     greet: String
-    all_food: [Food_Item]
+    all_food(alpha: Boolean): [Food_Item]
     all_expired: [Food_Item]
     food_item(id: Int!): Food_Item
     spice_rack: [Spice]
@@ -49,9 +51,14 @@ export const schema = buildSchema(`
     pretty_purchased_date: String
     expiration_date: String
     pretty_expiration_date: String
-    delta: String
+    delta: Delta_Object
     food_type: Int
     created: Int
+  }
+
+  type Delta_Object {
+    time: String
+    warning: Boolean
   }
 
   type Spice {
@@ -80,13 +87,24 @@ export const root = {
   greet: () => {
     return "Satan"
   },
-  all_food: async () => {
-    const r = await query("select * from food_items where is_active = 1 and expiration_date > now() order by expiration_date asc");
+  all_food: async (args) => {
+    const r = await query(`select * from food_items where is_active = 1 and expiration_date > now() order by ${args.alpha ? "item_name" : "expiration_date"} asc`);
+    const warningDays = 3;
+    const warningTime = warningDays * 8.64e+7; // Gives warningDays in milliseconds --
+
     for (let i = 0; i < r.length; i++) {
       r[i].pretty_purchased_date = prettyDate(r[i].purchased_date);
       r[i].pretty_expiration_date = prettyDate(r[i].expiration_date);
-      const catchDelta = dayjs(new Date()).to(r[i].expiration_date, true);
-      r[i].delta = catchDelta.substring(0, 1) === "a" ? "1 " + catchDelta.split("a ")[1] : catchDelta;
+      const delta = dayjs(new Date()).to(r[i].expiration_date, true);
+
+      const expiration = dayjs(r[i].expiration_date);
+      const nowPlusWarningTime = dayjs(new Date() + warningTime);
+      const warning = expiration.diff(nowPlusWarningTime);
+
+      r[i].delta = {
+        time: delta,
+        warning: warning < warningTime
+      }
     }
     return r;
   },

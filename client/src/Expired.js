@@ -20,7 +20,6 @@ function Expired(props) {
         }`);
 
         setAllExpired(allExpired.all_expired);
-        console.log(allExpired.all_expired.length);
     }
 
     const handleDeleteFood = async (e) => {
