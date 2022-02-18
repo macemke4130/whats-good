@@ -98,6 +98,16 @@ label {
     justify-content: center;
 }
 
+ul {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+li {
+    text-align: center;
+    list-style: none;
+}
+
 @media (max-width: 1000px) {
     .input-container {
         display: flex;

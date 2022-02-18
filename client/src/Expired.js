@@ -15,7 +15,9 @@ function Expired(props) {
                 id
 	            item_name
                 pretty_expiration_date
-                delta
+                delta {
+                    time
+                }
             }
         }`);
 
@@ -56,7 +58,7 @@ function Expired(props) {
                             <tr key={"food-" + food.id} id={"food-" + food.id} >
                                 <td key={"item-name-" + food.id} id={"item-name-" + food.id} className="item-col"><a href={`/edit/${food.id}`}>{food.item_name} {food.quantity > 1 && " x" + food.quantity}</a><button id={food.id} onClick={handleDeleteFood}>X</button></td>
                                 <td key={"expiration-date-" + food.id} id={"expiration-date-" + food.id}>{food.pretty_expiration_date}</td>
-                                <td key={"delta-" + food.id} id={"delta-" + food.id} className="red">{food.delta}</td>
+                                <td key={"delta-" + food.id} id={"delta-" + food.id} className="red">{food.delta.time}</td>
                             </tr>
                         ))}
                     </tbody>

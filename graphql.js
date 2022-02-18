@@ -112,7 +112,9 @@ export const root = {
     const r = await query("select * from food_items where is_active = 1 and expiration_date < now() order by expiration_date asc");
     for (let i = 0; i < r.length; i++) {
       r[i].pretty_expiration_date = prettyDate(r[i].expiration_date);
-      r[i].delta = dayjs(new Date()).to(r[i].expiration_date, true) + " ago";
+      r[i].delta = {
+        time: dayjs(new Date()).to(r[i].expiration_date, true) + " ago"
+      }
     }
     return r;
   },

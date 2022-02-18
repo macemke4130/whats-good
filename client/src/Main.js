@@ -64,7 +64,7 @@ function Main() {
     return (
         <>
             <a href="./spice-rack">Spices and Oils</a>
-            {/* <Expired /> */}
+            <Expired />
             <NewFood getData={getData} />
             <div>
                 <table>
