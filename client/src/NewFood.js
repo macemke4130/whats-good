@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useRef } from 'react';
 
 import { gql } from "./utils/gql";
+import { verifyUser } from "./utils/verifyUser";
 
 function NewFood(props) {
     const nameInput = useRef(null);
@@ -25,17 +26,20 @@ function NewFood(props) {
     }
 
     const handleSubmit = async () => {
-        try {
-            const r = await gql(`mutation{
-                newFoodItem(
-                item_name: "${foodItem}",
-                purchased_date: "${purchaseDate || todaysDate}",
-                expiration_date: "${expirationDate}",
-                userid: 1
-                ){insertId}}`);
-            if (r.newFoodItem.insertId) resetInputs();
-        } catch (e) {
-            console.error(e);
+        const loggedIn = await verifyUser();
+        if (loggedIn) {
+            try {
+                const r = await gql(`mutation{
+                    newFoodItem(
+                    item_name: "${foodItem}",
+                    purchased_date: "${purchaseDate || todaysDate}",
+                    expiration_date: "${expirationDate}",
+                    userid: 1
+                    ){insertId}}`);
+                if (r.newFoodItem.insertId) resetInputs();
+            } catch (e) {
+                console.error(e);
+            }
         }
     }
 

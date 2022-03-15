@@ -14,6 +14,7 @@ export const schema = buildSchema(`
     all_expired: [Food_Item]
     food_item(id: Int!): Food_Item
     spice_rack: [Spice]
+    user(username: String, password: String): Boolean
   }
 
   type Mutation {
@@ -89,7 +90,7 @@ export const root = {
   },
   all_food: async (args) => {
     const r = await query(`select * from food_items where is_active = 1 and expiration_date > now() order by ${args.alpha ? "item_name" : "expiration_date"} asc`);
-    const warningDays = 3;
+    const warningDays = 10;
     const warningTime = warningDays * 8.64e+7; // Gives warningDays in milliseconds --
 
     for (let i = 0; i < r.length; i++) {
@@ -130,6 +131,13 @@ export const root = {
     r[0].expiration_date = kabobDate(r[0].expiration_date);
     r[0].delta = dayjs(new Date()).to(r[0].expiration_date, true);
     return r[0];
+  },
+  user: async (args) => {
+    const r = await query("select * from users where username = ?", [args.username]);
+    const suppliedPassword = args.password;
+    const dbPassword = r[0].password;
+
+    return suppliedPassword === dbPassword;
   },
   // Mutations --
   newFoodItem: async (args) => {

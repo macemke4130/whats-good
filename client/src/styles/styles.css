@@ -72,7 +72,16 @@ tr:nth-child(even) {
 }
 
 .item-col {
-    width: 40vw;
+    width: 40%;
+}
+
+.date-col {
+    width: 10%;
+    padding: 0 0.25rem
+}
+
+.time-col {
+    width: 40%;
 }
 
 .red {

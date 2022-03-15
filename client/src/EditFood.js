@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { gql } from "./utils/gql";
+import { verifyUser } from "./utils/verifyUser";
 
 function EditFood() {
     const { id } = useParams();
@@ -32,29 +33,35 @@ function EditFood() {
     }
 
     const handleDeleteFood = async (e) => {
-        const id = Number(e.target.id);
+        const loggedIn = await verifyUser();
+        if (loggedIn) {
+            const id = Number(e.target.id);
 
-        try {
-            const r = await gql(`mutation{
-                deleteFoodItem(
-                id: ${id}
-                ){ changedRows }}`, true);
-            if (r.deleteFoodItem.changedRows === 1) history.push("/");
-        } catch (e) {
-            console.error(e);
+            try {
+                const r = await gql(`mutation{
+                    deleteFoodItem(
+                    id: ${id}
+                    ){ changedRows }}`, true);
+                if (r.deleteFoodItem.changedRows === 1) history.push("/");
+            } catch (e) {
+                console.error(e);
+            }
         }
     }
 
     const handleSubmit = async () => {
-        try {
-            const r = await gql(`mutation {
-                editFoodItem(id: ${id}, item_name: "${foodItem}", purchased_date: "${purchaseDate}", expiration_date: "${expirationDate}") {
-                  changedRows
-                }
-              }`, true);
-            if (r.editFoodItem.changedRows === 1) history.push("/");
-        } catch (e) {
-            console.error(e);
+        const loggedIn = await verifyUser();
+        if (loggedIn) {
+            try {
+                const r = await gql(`mutation {
+                    editFoodItem(id: ${id}, item_name: "${foodItem}", purchased_date: "${purchaseDate}", expiration_date: "${expirationDate}") {
+                      changedRows
+                    }
+                  }`, true);
+                if (r.editFoodItem.changedRows === 1) history.push("/");
+            } catch (e) {
+                console.error(e);
+            }
         }
     }
 

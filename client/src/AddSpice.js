@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 
 import { gql } from "./utils/gql";
+import { verifyUser } from "./utils/verifyUser";
 
 function AddSpice(props) {
     const [newSpice, setNewSpice] = useState("");
@@ -11,11 +12,15 @@ function AddSpice(props) {
     }
 
     const submitNewSpice = async () => {
-        try {
-            const r = await gql(`mutation { newSpice(spice_name: "${newSpice}") { insertId } }`);
-            if (r.newSpice.insertId) props.getData();
-        } catch (e) {
-            console.error(e);
+        const loggedIn = await verifyUser();
+
+        if (loggedIn) {
+            try {
+                const r = await gql(`mutation { newSpice(spice_name: "${newSpice}") { insertId } }`);
+                if (r.newSpice.insertId) props.getData();
+            } catch (e) {
+                console.error(e);
+            }
         }
     }
 
